@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+/* Dark mode is a class on <html>, not the OS setting, so the user can choose. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Raw values live here and in .dark only. Templates and component styles never read them. */
+:root {
+  --surface: oklch(100% 0 0);
+  --surface-raised: oklch(97.5% 0.004 260);
+  --surface-sunken: oklch(95% 0.006 260);
+  --text: oklch(22% 0.03 260);
+  --text-muted: oklch(46% 0.02 260);
+  --primary: oklch(50% 0.2 262);
+  --primary-contrast: oklch(99% 0 0);
+  --primary-soft: oklch(94.5% 0.035 262);
+  --danger: oklch(51% 0.2 25);
+  --danger-contrast: oklch(99% 0 0);
+  --danger-soft: oklch(95.5% 0.03 25);
+  --warning-soft: oklch(95% 0.06 85);
+  --warning-text: oklch(44% 0.11 65);
+  --success: oklch(56% 0.14 152);
+  --success-text: oklch(42% 0.11 152);
+  --border: oklch(89% 0.008 260);
+  --border-strong: oklch(78% 0.012 260);
+
+  /* Priority severity: carried by the level bars of PriorityBadge and the group rail, never by text alone. */
+  --priority-critical: oklch(54% 0.21 25);
+  --priority-high: oklch(64% 0.17 48);
+  --priority-medium: oklch(72% 0.15 85);
+  --priority-low: oklch(66% 0.03 260);
+}
+
+.dark {
+  --surface: oklch(21% 0.015 262);
+  --surface-raised: oklch(17.5% 0.014 262);
+  --surface-sunken: oklch(25% 0.016 262);
+  --text: oklch(95% 0.008 262);
+  --text-muted: oklch(73% 0.02 262);
+  --primary: oklch(76% 0.13 262);
+  --primary-contrast: oklch(16% 0.02 262);
+  --primary-soft: oklch(30% 0.06 262);
+  --danger: oklch(74% 0.15 25);
+  --danger-contrast: oklch(16% 0.02 25);
+  --danger-soft: oklch(28% 0.05 25);
+  --warning-soft: oklch(31% 0.06 75);
+  --warning-text: oklch(86% 0.11 85);
+  --success: oklch(72% 0.14 152);
+  --success-text: oklch(82% 0.12 152);
+  --border: oklch(32% 0.016 262);
+  --border-strong: oklch(42% 0.02 262);
+
+  --priority-critical: oklch(70% 0.18 25);
+  --priority-high: oklch(74% 0.15 50);
+  --priority-medium: oklch(80% 0.13 88);
+  --priority-low: oklch(62% 0.025 262);
+}
+
+/* Role tokens: the only names used in templates (bg-surface, text-text-muted) and in var(). */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-contrast: var(--primary-contrast);
+  --color-primary-soft: var(--primary-soft);
+  --color-danger: var(--danger);
+  --color-danger-contrast: var(--danger-contrast);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-text: var(--warning-text);
+  --color-success: var(--success);
+  --color-success-text: var(--success-text);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-priority-critical: var(--priority-critical);
+  --color-priority-high: var(--priority-high);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-low: var(--priority-low);
+}
+
+@theme {
+  --radius-card: var(--radius-xl);
+  --radius-control: var(--radius-md);
+  --shadow-card: 0 1px 2px oklch(22% 0.03 260 / 0.06), 0 4px 12px -4px oklch(22% 0.03 260 / 0.08);
+  --shadow-popover:
+    0 2px 4px oklch(22% 0.03 260 / 0.08), 0 12px 32px -8px oklch(22% 0.03 260 / 0.18);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The parts of the page the browser draws itself, themed from the same palette. */
+@layer base {
+  html {
+    color-scheme: light;
+    scrollbar-color: var(--color-border-strong) transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    accent-color: var(--color-primary);
+    caret-color: var(--color-primary);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-soft);
+    color: var(--color-text);
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  time,
+  data {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}

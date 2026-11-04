@@ -1,0 +1,96 @@
+<section
+  class="mx-auto max-w-2xl rounded-card bg-surface p-5 shadow-card sm:p-6"
+  aria-labelledby="new-ticket-heading"
+>
+  <h1 id="new-ticket-heading" class="text-xl font-semibold text-text">New ticket</h1>
+  <p class="mt-1 max-w-prose text-sm text-text-muted">
+    For a request that came in by phone or email. After it is saved, the AI classifies it in the
+    background and drafts a reply; you can watch that happen on the ticket.
+  </p>
+
+  <form class="mt-6 space-y-5" [formRoot]="ticketForm">
+    <div class="flex flex-col gap-1.5">
+      <label for="customer-email" class="text-sm font-medium text-text">Customer email</label>
+      <input
+        id="customer-email"
+        type="email"
+        autocomplete="email"
+        aria-describedby="customer-email-error"
+        class="h-9 rounded-control border border-border-strong bg-surface px-3 text-sm text-text aria-invalid:border-danger"
+        [attr.aria-invalid]="showsError(ticketForm.customerEmail)"
+        [formField]="ticketForm.customerEmail"
+      />
+      <app-field-error id="customer-email-error" [field]="ticketForm.customerEmail" />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="subject" class="text-sm font-medium text-text">Subject</label>
+      <input
+        id="subject"
+        type="text"
+        aria-describedby="subject-or-body-hint subject-error"
+        class="h-9 rounded-control border border-border-strong bg-surface px-3 text-sm text-text aria-invalid:border-danger"
+        [attr.aria-invalid]="showsError(ticketForm.subject)"
+        [formField]="ticketForm.subject"
+      />
+      <app-field-error id="subject-error" [field]="ticketForm.subject" />
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label for="body" class="text-sm font-medium text-text">Message</label>
+      <textarea
+        id="body"
+        rows="8"
+        aria-describedby="subject-or-body-hint body-error body-counter"
+        class="rounded-control border border-border-strong bg-surface px-3 py-2 text-sm text-text aria-invalid:border-danger"
+        [attr.aria-invalid]="showsError(ticketForm.body)"
+        [formField]="ticketForm.body"
+      ></textarea>
+      <div class="flex items-start justify-between gap-4">
+        <app-field-error id="body-error" [field]="ticketForm.body" />
+        <p id="body-counter" [class]="bodyCounterClass()">
+          @if (showsBodyCounter()) {
+            {{ bodyLength() | number }} / {{ bodyMaxLength | number }} characters
+          }
+        </p>
+      </div>
+      <p id="subject-or-body-hint" class="text-xs text-text-muted">
+        Give a subject, a message or both.
+      </p>
+    </div>
+
+    @for (message of formErrors(); track message) {
+      <p role="alert" class="text-sm text-danger">{{ message }}</p>
+    } @empty {}
+
+    @if (submitError(); as message) {
+      <p role="alert" class="text-sm text-danger">{{ message }}</p>
+    }
+
+    <div class="space-y-3 border-t border-border pt-5">
+      <p class="text-sm text-text-muted">
+        The ticket is created in tenant <span class="font-medium text-text">{{ tenantId() }}</span
+        >.
+      </p>
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          class="h-9 rounded-control bg-primary px-3 text-sm font-medium text-primary-contrast hover:bg-primary/90 active:bg-primary/80 disabled:opacity-60"
+          [disabled]="ticketForm().submitting()"
+        >
+          @if (ticketForm().submitting()) {
+            Creating…
+          } @else {
+            Create ticket
+          }
+        </button>
+        <a
+          routerLink="/tickets"
+          class="inline-flex h-9 items-center rounded-control px-3 text-sm font-medium text-text-muted hover:bg-surface-sunken hover:text-text active:bg-border"
+        >
+          Cancel
+        </a>
+      </div>
+    </div>
+  </form>
+</section>

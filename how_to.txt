@@ -1,0 +1,44 @@
+SUPPORT TRIAGE: HOW TO RUN
+
+You need: .NET SDK 10, Node 22+ with npm, and the Azure Cosmos DB emulator.
+
+
+1. Start the Cosmos DB emulator
+   It must listen on https://localhost:8081 (the default).
+
+2. Start the API
+   The OpenAI key is not in the code. Set it first (PowerShell):
+   $env:OpenAi__ApiKey = "<your key>"
+
+   cd be
+   dotnet run --project src/SupportTriage.Api
+
+   The API runs on https://localhost:51053.
+   API docs: https://localhost:51053/scalar/v1
+   On first start it loads the 20 seed tickets from seed_data.json.
+   A background worker then sends every unclassified ticket to the LLM,
+   so the seed tickets get a category, priority and reply within a few seconds.
+
+3. Start the web app (second terminal)
+   cd front/web
+   npm install
+   npm start
+
+   Open http://localhost:4200
+
+4. Use it
+   Pick a tenant in the header (contoso or fabrikam).
+   Filter the list by category and priority, open a ticket to see the
+   suggested reply, or use the form to create a new ticket.
+
+
+No backend? Run the UI alone with fake data:
+   cd front/web
+   npm run start:mock
+
+Calling the API directly: every /api request needs the header
+   X-Tenant-Id: contoso
+
+Run the tests:
+   cd be        && dotnet test
+   cd front/web && npm test -- --watch=false

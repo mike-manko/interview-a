@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Mediator.Abstractions" Version="3.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SupportTriage.Domain.Tests" />
+    <InternalsVisibleTo Include="SupportTriage.Application.Tests" />
+    <InternalsVisibleTo Include="SupportTriage.Persistence" />
+    <InternalsVisibleTo Include="SupportTriage.Persistence.Tests" />
+  </ItemGroup>
+
+</Project>

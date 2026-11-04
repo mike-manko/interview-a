@@ -1,0 +1,152 @@
+@if (detail(); as detail) {
+  <article
+    animate.enter="panel-enter"
+    class="rounded-card bg-surface p-5 shadow-card"
+    aria-labelledby="ticket-heading"
+  >
+    <header class="flex items-start justify-between gap-4">
+      <div class="min-w-0">
+        <h2 id="ticket-heading" class="text-lg font-semibold break-words text-text">
+          {{ detail.ticket | ticketSubject }}
+        </h2>
+        <p class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-text-muted">
+          <span class="tabular-nums">{{ detail.ticket.id }}</span>
+          <a class="break-all underline hover:text-text" [href]="detail.mailto">
+            {{ detail.ticket.customerEmail }}
+          </a>
+          <span>
+            Received
+            <time [attr.datetime]="detail.ticket.createdAt">
+              {{ detail.ticket.createdAt | date: 'MMM d, y, HH:mm' }}
+            </time>
+          </span>
+        </p>
+      </div>
+      <a
+        routerLink=".."
+        queryParamsHandling="preserve"
+        class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-control px-3 text-sm font-medium text-text-muted hover:bg-surface-sunken hover:text-text active:bg-border"
+      >
+        <svg
+          class="size-4"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M4 4l8 8M12 4l-8 8" />
+        </svg>
+        Close
+      </a>
+    </header>
+
+    <section class="mt-6" aria-labelledby="triage-heading">
+      <div class="flex flex-wrap items-center gap-3">
+        <h3 id="triage-heading" class="text-sm font-semibold text-text">Triage</h3>
+        <app-triage-state-badge [state]="detail.state" />
+      </div>
+
+      <p class="mt-2 text-sm text-text-muted" aria-live="polite">
+        @if (detail.state === 'queued' || detail.state === 'classifying') {
+          The AI is classifying this ticket. This panel updates by itself.
+        }
+      </p>
+
+      <dl class="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+        <div>
+          <dt class="text-text-muted">Priority</dt>
+          <dd class="mt-1"><app-priority-badge [priority]="detail.ticket.priority" /></dd>
+        </div>
+        <div>
+          <dt class="text-text-muted">Category</dt>
+          <dd class="mt-1"><app-category-badge [category]="detail.ticket.category" /></dd>
+        </div>
+        @if (detail.ticket.classifiedAt; as classifiedAt) {
+          <div>
+            <dt class="text-text-muted">Classified</dt>
+            <dd class="mt-1 text-text">
+              <time [attr.datetime]="classifiedAt">{{
+                classifiedAt | date: 'MMM d, y, HH:mm'
+              }}</time>
+            </dd>
+          </div>
+        }
+      </dl>
+
+      @if (detail.ticket.failureMessage; as failureMessage) {
+        <div [class]="detail.calloutClass">
+          <p class="text-text">{{ failureMessage }}</p>
+          @if (detail.failedAttempts) {
+            <p class="mt-1 text-text tabular-nums">{{ detail.failedAttempts }}</p>
+          }
+        </div>
+      }
+      @if (detail.ticket.isHidden) {
+        <p class="mt-3 max-w-prose text-sm text-text-muted">
+          Hidden from the queue because triage gave up. It shows only with "Show tickets triage gave
+          up on".
+        </p>
+      }
+    </section>
+
+    <app-suggested-reply
+      class="mt-6"
+      [reply]="detail.ticket.suggestedReply"
+      [state]="detail.state"
+    />
+
+    <section class="mt-6" aria-labelledby="message-heading">
+      <h3 id="message-heading" class="text-sm font-semibold text-text">
+        Message from the customer
+      </h3>
+      @if (detail.hasMessage) {
+        <!-- Untrusted customer text: interpolation only, so HTML in it is shown, never rendered. -->
+        <!-- textContent, not interpolation: the formatter may add indentation that pre-wrap would show. Still plain text. -->
+        <p
+          class="mt-2 max-w-prose text-sm whitespace-pre-wrap text-text"
+          [textContent]="detail.ticket.body"
+        ></p>
+      } @else {
+        <p class="mt-2 text-sm text-text-muted">(no message)</p>
+      }
+    </section>
+  </article>
+} @else if (loading()) {
+  <div class="rounded-card bg-surface p-5 shadow-card" aria-busy="true">
+    <p class="sr-only" role="status">Loading ticket…</p>
+    <div class="space-y-3 motion-safe:animate-pulse" aria-hidden="true">
+      <div class="h-5 w-2/3 rounded-control bg-surface-sunken"></div>
+      <div class="h-4 w-1/2 rounded-control bg-surface-sunken"></div>
+      <div class="mt-6 h-4 w-1/3 rounded-control bg-surface-sunken"></div>
+      <div class="h-24 rounded-card bg-surface-sunken"></div>
+      <div class="h-4 w-5/6 rounded-control bg-surface-sunken"></div>
+      <div class="h-4 w-3/4 rounded-control bg-surface-sunken"></div>
+    </div>
+  </div>
+} @else if (notFound()) {
+  <div class="rounded-card bg-surface p-5 shadow-card">
+    <h2 class="text-lg font-semibold text-text">Ticket not found</h2>
+    <p class="mt-1 text-sm text-text-muted">This ticket is not in tenant {{ tenantId() }}.</p>
+    <a
+      routerLink=".."
+      queryParamsHandling="preserve"
+      class="mt-4 inline-flex h-9 items-center rounded-control border border-border-strong bg-surface px-3 text-sm font-medium text-text hover:bg-surface-sunken active:bg-border"
+    >
+      Back to tickets
+    </a>
+  </div>
+} @else if (errorMessage(); as message) {
+  <div class="rounded-card bg-surface p-5 shadow-card">
+    <h2 class="text-lg font-semibold text-text">The ticket did not load</h2>
+    <p role="alert" class="mt-1 text-sm text-danger">{{ message }}</p>
+    <button
+      type="button"
+      class="mt-4 h-9 rounded-control border border-border-strong bg-surface px-3 text-sm font-medium text-text hover:bg-surface-sunken active:bg-border disabled:opacity-60"
+      (click)="reloadTicket()"
+    >
+      Try again
+    </button>
+  </div>
+}

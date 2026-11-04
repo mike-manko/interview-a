@@ -1,0 +1,77 @@
+<table class="w-full text-left text-sm">
+  <caption class="sr-only">
+    {{
+      caption()
+    }}
+  </caption>
+  <thead class="sr-only md:not-sr-only">
+    <tr class="text-xs text-text-muted">
+      <th scope="col" class="px-3 py-2 font-medium whitespace-nowrap">Priority</th>
+      <th scope="col" class="px-3 py-2 font-medium">Ticket</th>
+      <th scope="col" class="px-3 py-2 font-medium">Category</th>
+      <th scope="col" class="px-3 py-2 font-medium">Triage</th>
+      <th scope="col" class="px-3 py-2 font-medium whitespace-nowrap">Received</th>
+    </tr>
+  </thead>
+  @for (group of rows(); track group.key) {
+    <tbody>
+      @if (showGroupHeaders()) {
+        <tr class="flex md:table-row">
+          <th
+            scope="rowgroup"
+            colspan="5"
+            class="flex-1 border-t border-border bg-surface-raised px-3 pt-4 pb-2 text-left font-normal"
+          >
+            <span class="flex items-center gap-2">
+              <span aria-hidden="true" [class]="group.railClass"></span>
+              <span class="text-sm font-semibold text-text">{{ group.label }}</span>
+              <data class="text-xs text-text-muted" aria-hidden="true" [value]="group.count">{{
+                group.count
+              }}</data>
+              <span class="sr-only">, {{ group.countLabel }}</span>
+            </span>
+          </th>
+        </tr>
+      }
+      @for (row of group.tickets; track row.ticket.id) {
+        <tr
+          #active="routerLinkActive"
+          routerLinkActive="bg-primary-soft"
+          class="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-border px-3 py-3 transition-colors duration-150 ease-out-expo hover:bg-surface-sunken md:table-row md:h-11 md:p-0"
+        >
+          <td class="md:px-3 md:py-2.5 md:align-middle">
+            <app-priority-badge [priority]="row.ticket.priority" />
+          </td>
+          <td
+            class="order-first w-full min-w-0 md:order-none md:w-full md:max-w-0 md:px-3 md:py-2.5"
+          >
+            <a
+              class="block truncate font-medium text-text hover:underline"
+              queryParamsHandling="preserve"
+              [routerLink]="[row.ticket.id]"
+              [attr.aria-current]="active.isActive ? 'page' : null"
+              [title]="row.ticket | ticketSubject"
+              >{{ row.ticket | ticketSubject }}</a
+            >
+            <span class="mt-0.5 flex min-w-0 gap-1.5 text-xs text-text-muted">
+              <span class="truncate">{{ row.ticket.customerEmail }}</span>
+              <span aria-hidden="true">·</span>
+              <span class="truncate">{{ row.ticket.id }}</span>
+            </span>
+          </td>
+          <td class="md:px-3 md:py-2.5">
+            <app-category-badge [category]="row.ticket.category" />
+          </td>
+          <td class="md:px-3 md:py-2.5">
+            <app-triage-state-badge [state]="row.triageState" />
+          </td>
+          <td class="ms-auto text-xs whitespace-nowrap text-text-muted md:ms-0 md:px-3 md:py-2.5">
+            <time [attr.datetime]="row.ticket.createdAt">{{
+              row.ticket.createdAt | date: 'MMM d, HH:mm'
+            }}</time>
+          </td>
+        </tr>
+      }
+    </tbody>
+  }
+</table>

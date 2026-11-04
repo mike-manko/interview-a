@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SupportTriage.Api/SupportTriage.Api.csproj" />
+    <Project Path="src/SupportTriage.Application/SupportTriage.Application.csproj" />
+    <Project Path="src/SupportTriage.Domain/SupportTriage.Domain.csproj" />
+    <Project Path="src/SupportTriage.Infrastructure/SupportTriage.Infrastructure.csproj" />
+    <Project Path="src/SupportTriage.Persistence/SupportTriage.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SupportTriage.Application.Tests/SupportTriage.Application.Tests.csproj" />
+    <Project Path="tests/SupportTriage.ArchitectureTests/SupportTriage.ArchitectureTests.csproj" />
+    <Project Path="tests/SupportTriage.Domain.Tests/SupportTriage.Domain.Tests.csproj" />
+    <Project Path="tests/SupportTriage.Infrastructure.Tests/SupportTriage.Infrastructure.Tests.csproj" />
+    <Project Path="tests/SupportTriage.Persistence.Tests/SupportTriage.Persistence.Tests.csproj" />
+  </Folder>
+</Solution>

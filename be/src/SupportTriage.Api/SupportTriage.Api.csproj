@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="../SupportTriage.Application/SupportTriage.Application.csproj" />
+    <ProjectReference Include="../SupportTriage.Infrastructure/SupportTriage.Infrastructure.csproj" />
+    <ProjectReference Include="../SupportTriage.Persistence/SupportTriage.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mediator.SourceGenerator" Version="3.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.18.0" />
+  </ItemGroup>
+
+  <!-- The seed file at the repository root is copied next to the binaries (SeedData:FilePath is relative to them). -->
+  <ItemGroup>
+    <None Include="../../seed_data.json" Link="seed_data.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
